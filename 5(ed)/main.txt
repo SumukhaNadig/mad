@@ -1,0 +1,76 @@
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+public class MainActivity extends Activity implements
+OnClickListener
+{
+ DatabaseHelper myDb;
+ EditText name_txt;
+ EditText marks_txt;
+ Button insert_btn;
+ Button display_btn;
+ Button delete_btn;
+ Button update_btn;
+ TextView txt;
+ @Override 
+ protected void onCreate(Bundle savedInstanceState) {
+ super.onCreate(savedInstanceState);
+ setContentView(R.layout.activity_main);
+ myDb = new DatabaseHelper(this);
+ name_txt=(EditText)findViewById(R.id.Name);
+ marks_txt=(EditText)findViewById(R.id.Marks);
+ insert_btn = (Button) findViewById(R.id.Insert);
+ display_btn = (Button) findViewById(R.id.ViewAll);
+ delete_btn=(Button)findViewById(R.id.Delete);
+ update_btn=(Button)findViewById(R.id.Update);
+ insert_btn.setOnClickListener((View.OnClickListener)
+this);
+ display_btn.setOnClickListener((View.OnClickListener)
+this);
+ delete_btn.setOnClickListener((View.OnClickListener)this);
+ update_btn.setOnClickListener((View.OnClickListener)this);
+ }
+ public void onClick(View v) {
+ if (v.getId() == R.id.Insert) {
+ myDb.insert_record(name_txt.getText().toString(),
+Integer.parseInt(marks_txt.getText().toString()));
+ showMessage("Data Inserted");
+ }
+ if (v.getId() == R.id.ViewAll) {
+ StringBuffer buf = myDb.display_all_records();
+ showMessage(buf.toString());
+ }
+ if (v.getId() == R.id.Delete) {
+ showMessage("Data Deleted");
+ Log.d("delete","delete");
+ myDb.delete_record(name_txt.getText().toString());
+ }
+ if (v.getId() == R.id.Update) {
+ showMessage("Data Updated");
+
+myDb.update_record(name_txt.getText().toString(),Integer.parseInt(
+marks_txt.getText().toString()));
+ }
+ }
+ /*public void showMessage(String message)
+ {
+ txt.setText(message);
+ }*/ 
+ public void showMessage(String message)
+ {
+ Builder builder=new Builder(this);
+ builder.setCancelable(true);
+ builder.setMessage(message);
+ builder.show();
+ }
+}
